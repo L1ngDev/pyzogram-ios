@@ -17,12 +17,17 @@
 ## Сборка
 
 Проект собирается через Bazel (`build-system/Make/Make.py`), только на macOS + Xcode.
-Для сборки в GitHub Actions задайте в Secrets репозитория:
+Для сборки в GitHub Actions задайте в Secrets репозитория
+(Settings → Secrets and variables → Actions):
 
-- `API_ID` и `API_HASH` — из https://my.telegram.org
-- `TELEGRAM_CODESIGNING_GIT_PASSWORD` и `CODESIGNING_REPO` — для подписи (см. документацию Telegram-iOS)
+- `APPLE_ID` — ваш Apple ID (подойдёт бесплатный)
+- `APPLE_PASSWORD` — app-specific password от этого Apple ID
+- `TEAM_ID` — ID команды/аккаунта Apple
 
-IPA выгружается как artifact после успешной сборки.
+Сборка использует Xcode-managed подпись (ad-hoc). IPA выгружается как artifact
+после успешной сборки и ставится через AltStore / TrollStore / 3uTools
+(они сами переподпишут при установке). `API_ID`/`API_HASH` уже прописаны в конфиге.
 
-> Примечание: поведенческие моды (призрак/анти-удаление) требуют глубокой интеграции
-> с движком Telegram и дорабатываются итеративно при сборках на macOS.
+> Примечание: переключатели (призрак/анти-удаление) пока сохраняют состояние и
+> показывают UI; глубокая интеграция с движком Telegram дорабатывается итеративно
+> после первых рабочих сборок на macOS.
