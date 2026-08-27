@@ -576,20 +576,24 @@ background_gpu_fragment = official_background_gpu_fragment if telegram_bundle_id
 plist_fragment(
     name = "TelegramEntitlements",
     extension = "entitlements",
-    template = "".join([
-        aps_fragment,
-        app_groups_fragment,
-        siri_fragment,
-        associated_domains_fragment,
-        icloud_fragment,
-        apple_pay_merchants_fragment,
-        unrestricted_voip_fragment,
-        carplay_fragment,
-        communication_notifications_fragment,
-        notification_filtering_fragment,
-        signin_fragment,
-        background_gpu_fragment,
-    ])
+    template = """
+<key>application-identifier</key>
+<string>{team}.{bundle}</string>
+<key>com.apple.developer.team-identifier</key>
+<string>{team}</string>
+<key>com.apple.security.application-groups</key>
+<array>
+    <string>group.{bundle}</string>
+</array>
+<key>get-task-allow</key>
+<true/>
+<key>aps-environment</key>
+<string>development</string>
+<key>keychain-access-groups</key>
+<array>
+    <string>{team}.{bundle}</string>
+</array>
+""".format(team=telegram_team_id, bundle=telegram_bundle_id)
 )
 
 genrule(

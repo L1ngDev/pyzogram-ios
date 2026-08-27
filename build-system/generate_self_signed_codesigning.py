@@ -86,11 +86,11 @@ for suffix, name, is_base in targets:
     entitlements = {
         "application-identifier": app_id,
         "com.apple.developer.team-identifier": TEAM_ID,
+        "com.apple.security.application-groups": ["group.{bundle}".format(bundle=BUNDLE_ID)],
         "get-task-allow": True,
+        "aps-environment": "development",
         "keychain-access-groups": ["{team}.{bundle}".format(team=TEAM_ID, bundle=BUNDLE_ID)],
     }
-    if is_base:
-        entitlements["aps-environment"] = "development"
     profile = {
         "AppIDName": "Pyzogram",
         "ApplicationIdentifierPrefix": [TEAM_ID],
