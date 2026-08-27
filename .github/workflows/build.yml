@@ -37,7 +37,7 @@ jobs:
             --cacheDir ~/telegram-bazel-cache \
             build \
             --configurationPath build-system/appstore-configuration.json \
-            --disableProvisioningProfiles true \
+            --disableProvisioningProfiles \
             --buildNumber=1 \
             --configuration=${{ github.event.inputs.configuration || 'debug_arm64' }}
 
