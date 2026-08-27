@@ -1018,16 +1018,6 @@ if __name__ == '__main__':
     )
 
     generateProjectParser.add_argument(
-        '--disableProvisioningProfiles',
-        action='store_true',
-        default=False,
-        help='''
-            This allows to build the project for simulator without having any codesigning identities installed.
-            Building for an actual device will fail.
-            '''
-    )
-
-    generateProjectParser.add_argument(
         '--projectIncludeRelease',
         action='store_true',
         default=False,
