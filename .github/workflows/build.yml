@@ -28,7 +28,21 @@ jobs:
       - name: Select Xcode
         run: sudo xcode-select -s /Applications/Xcode.app/Contents/Developer
 
-      - name: Build (Bazel via Make.py, unsigned — no Apple ID required)
+      - name: Generate self-signed codesigning identity (no Apple ID)
+        run: |
+          python3 build-system/generate_self_signed_codesigning.py
+
+      - name: Import signing cert into keychain
+        run: |
+          security create-keychain -p pyzogram build.keychain
+          security set-keychain-settings -t 21600 -u ~/Library/Keychains/build.keychain
+          security unlock-keychain -p pyzogram ~/Library/Keychains/build.keychain
+          security import codesigning/certs/dev.p12 -k ~/Library/Keychains/build.keychain -P pyzogram -T /usr/bin/codesign -T /usr/bin/security
+          security list-keychains -d user -s ~/Library/Keychains/build.keychain login.keychain
+          security default-keychain -s ~/Library/Keychains/build.keychain
+          security set-key-partition-list -S apple-tool:,apple: -s -k pyzogram ~/Library/Keychains/build.keychain
+
+      - name: Build (Bazel via Make.py, self-signed — no Apple ID required)
         env:
           API_ID: ${{ secrets.API_ID }}
           API_HASH: ${{ secrets.API_HASH }}
@@ -37,7 +51,7 @@ jobs:
             --cacheDir ~/telegram-bazel-cache \
             build \
             --configurationPath build-system/appstore-configuration.json \
-            --disableProvisioningProfiles \
+            --codesigningInformationPath codesigning \
             --buildNumber=1 \
             --configuration=${{ github.event.inputs.configuration || 'debug_arm64' }}
 
