@@ -470,6 +470,19 @@ def resolve_codesigning(arguments, base_path, build_configuration, provisioning_
         )
     elif arguments.xcodeManagedCodesigning is not None and arguments.xcodeManagedCodesigning == True:
         profile_source = XcodeManagedCodesigningSource()
+    elif getattr(arguments, 'disableProvisioningProfiles', None):
+        class _UnsignedCodesigningSource:
+            def load_data(self, working_dir):
+                pass
+            def copy_profiles_to_destination(self, destination_path):
+                pass
+            def copy_certificates_to_destination(self, destination_path):
+                pass
+            def resolve_aps_environment(self):
+                return 'development'
+            def use_xcode_managed_codesigning(self):
+                return False
+        profile_source = _UnsignedCodesigningSource()
     else:
         raise Exception('Neither gitCodesigningRepository nor codesigningInformationPath are set')
 
@@ -670,6 +683,9 @@ def build(bazel, arguments):
         bazel_command_line.add_cache_dir(arguments.cacheDir)
     elif arguments.cacheHost is not None:
         bazel_command_line.add_remote_cache(arguments.cacheHost)
+
+    if getattr(arguments, 'disableProvisioningProfiles', False):
+        bazel_command_line.set_disable_provisioning_profiles()
 
     resolve_configuration(
         base_path=os.getcwd(),
@@ -1036,6 +1052,15 @@ if __name__ == '__main__':
         type=int,
         help='Build number.',
         metavar='number'
+    )
+    buildParser.add_argument(
+        '--disableProvisioningProfiles',
+        action='store_true',
+        default=False,
+        help='''
+            Build without embedding a provisioning profile (unsigned IPA for sideloading tools like Sideloadly).
+            The resulting IPA is not signed for a specific device and must be re-signed on install.
+            '''
     )
     add_project_and_build_common_arguments(buildParser)
     buildParser.add_argument(
