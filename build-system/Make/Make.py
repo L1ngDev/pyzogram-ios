@@ -872,6 +872,13 @@ def add_codesigning_common_arguments(current_parser: argparse.ArgumentParser):
             Let Xcode manage your certificates and provisioning profiles.
             ''',
     )
+    codesigning_group.add_argument(
+        '--disableProvisioningProfiles',
+        action='store_true',
+        help='''
+            Build an unsigned IPA without any codesigning source (for sideloading tools like Sideloadly).
+            ''',
+    )
 
     current_parser.add_argument(
         '--gitCodesigningType',
@@ -1052,15 +1059,6 @@ if __name__ == '__main__':
         type=int,
         help='Build number.',
         metavar='number'
-    )
-    buildParser.add_argument(
-        '--disableProvisioningProfiles',
-        action='store_true',
-        default=False,
-        help='''
-            Build without embedding a provisioning profile (unsigned IPA for sideloading tools like Sideloadly).
-            The resulting IPA is not signed for a specific device and must be re-signed on install.
-            '''
     )
     add_project_and_build_common_arguments(buildParser)
     buildParser.add_argument(
