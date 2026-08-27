@@ -1038,10 +1038,6 @@ ios_extension(
         ":disableProvisioningProfilesSetting": None,
         "//conditions:default": "@build_configuration//provisioning:Share.mobileprovision",
     }),
-    codesign = select({
-        ":disableProvisioningProfilesSetting": False,
-        "//conditions:default": True,
-    }),
     deps = [":ShareExtensionLib"],
     frameworks = [
         ":TelegramUIFramework"
@@ -1149,10 +1145,6 @@ ios_extension(
         ":disableProvisioningProfilesSetting": None,
         "//conditions:default": "@build_configuration//provisioning:NotificationContent.mobileprovision",
     }),
-    codesign = select({
-        ":disableProvisioningProfilesSetting": False,
-        "//conditions:default": True,
-    }),
     deps = [":NotificationContentExtensionLib"],
     frameworks = [
         ":TelegramUIFramework"
@@ -1258,10 +1250,6 @@ ios_extension(
     provisioning_profile = select({
         ":disableProvisioningProfilesSetting": None,
         "//conditions:default": "@build_configuration//provisioning:Widget.mobileprovision",
-    }),
-    codesign = select({
-        ":disableProvisioningProfilesSetting": False,
-        "//conditions:default": True,
     }),
     deps = [
         ":WidgetExtensionLib",
@@ -1399,10 +1387,6 @@ ios_extension(
         ":disableProvisioningProfilesSetting": None,
         "//conditions:default": "@build_configuration//provisioning:Intents.mobileprovision",
     }),
-    codesign = select({
-        ":disableProvisioningProfilesSetting": False,
-        "//conditions:default": True,
-    }),
     deps = [":IntentsExtensionLib"],
     frameworks = [
         ":SwiftSignalKitFramework",
@@ -1498,10 +1482,6 @@ ios_extension(
         ":disableProvisioningProfilesSetting": None,
         "//conditions:default": "@build_configuration//provisioning:BroadcastUpload.mobileprovision",
     }),
-    codesign = select({
-        ":disableProvisioningProfilesSetting": False,
-        "//conditions:default": True,
-    }),
     deps = [":BroadcastUploadExtensionLib"],
     frameworks = [
         ":TelegramUIFramework",
@@ -1561,10 +1541,6 @@ ios_extension(
     provisioning_profile = select({
         ":disableProvisioningProfilesSetting": None,
         "//conditions:default": "@build_configuration//provisioning:NotificationService.mobileprovision",
-    }),
-    codesign = select({
-        ":disableProvisioningProfilesSetting": False,
-        "//conditions:default": True,
     }),
     deps = ["//Telegram/NotificationService:NotificationServiceExtensionLib"],
     frameworks = [
@@ -1792,10 +1768,6 @@ ios_application(
     provisioning_profile = select({
         ":disableProvisioningProfilesSetting": None,
         "//conditions:default": ":Telegram_xcode_profile" if telegram_use_xcode_managed_codesigning else "@build_configuration//provisioning:Telegram.mobileprovision",
-    }),
-    codesign = select({
-        ":disableProvisioningProfilesSetting": False,
-        "//conditions:default": True,
     }),
     entitlements = ":TelegramEntitlements.entitlements",
     infoplists = [
