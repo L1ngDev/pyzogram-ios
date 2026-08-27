@@ -1,0 +1,47 @@
+name: Build Pyzogram IPA
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: macos-15
+    timeout-minutes: 360
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: false
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Select Xcode
+        run: sudo xcode-select -s /Applications/Xcode.app/Contents/Developer
+
+      - name: Build (Bazel via Make.py)
+        env:
+          TELEGRAM_CODESIGNING_GIT_PASSWORD: ${{ secrets.TELEGRAM_CODESIGNING_GIT_PASSWORD }}
+          API_ID: ${{ secrets.API_ID }}
+          API_HASH: ${{ secrets.API_HASH }}
+        run: |
+          python3 build-system/Make/Make.py --overrideXcodeVersion \
+            --cacheDir ~/telegram-bazel-cache \
+            build \
+            --configurationPath build-system/appstore-configuration.json \
+            --gitCodesigningRepository "${{ secrets.CODESIGNING_REPO }}" \
+            --gitCodesigningType development \
+            --gitCodesigningUseCurrent \
+            --buildNumber=1 \
+            --configuration=debug_arm64
+
+      - name: Upload IPA
+        uses: actions/upload-artifact@v4
+        with:
+          name: Pyzogram.ipa
+          path: bazel-bin/Telegram/Telegram.ipa
+          if-no-files-found: warn
